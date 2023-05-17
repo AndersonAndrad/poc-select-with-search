@@ -1,0 +1,44 @@
+<!-- <div class="select-container" #selector>
+  <div class="selector-box" (click)="onClick($event)">
+    <span>
+      {{ control && control.value ? itemSelected(control.value) : "Escolher" }}
+    </span>
+    <i class="material-icons" *ngIf="!opened">expand_more</i>
+    <i class="material-icons" *ngIf="opened">expand_less</i>
+  </div>
+
+  <div class="selector-dropdown" *ngIf="opened">
+    <input type="text" [placeholder]="'Buscar...'" />
+
+    <div class="options" #options>
+      <label *ngFor="let option of items">
+        <span (click)="onSelect(option[valueKey])">{{ option[labelKey] }}</span>
+      </label>
+    </div>
+  </div>
+</div> -->
+
+<div class="select" #selector>
+  <!-- Closed component -->
+  <header class="select-presentation" (click)="openSelect($event)">
+    <span>{{ textPresentation() }}</span>
+    <i class="material-icons">{{ iconExpand() }}</i>
+  </header>
+
+  <!-- Opened component -->
+  <div class="select-options-container" *ngIf="opened">
+    <div>
+      <header>
+        <input type="text" [formControl]="searchControl" />
+      </header>
+      <ul>
+        <li
+          *ngFor="let option of visibleOptions"
+          (click)="selectItem(option[this.key])"
+        >
+          {{ option[this.label] }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
