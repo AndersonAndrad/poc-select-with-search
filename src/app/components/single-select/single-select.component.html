@@ -31,7 +31,7 @@
       <header>
         <input type="text" [formControl]="searchControl" />
       </header>
-      <ul>
+      <ul *ngIf="visibleOptions.length">
         <li
           *ngFor="let option of visibleOptions"
           (click)="selectItem(option[this.key])"
@@ -39,6 +39,9 @@
           {{ option[this.label] }}
         </li>
       </ul>
+      <footer *ngIf="!visibleOptions.length">
+        <p>Nenhum item encontrado</p>
+      </footer>
     </div>
   </div>
 </div>
