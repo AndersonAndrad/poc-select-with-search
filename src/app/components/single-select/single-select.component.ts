@@ -141,8 +141,19 @@ export class SingleSelectComponent
         event.stopPropagation();
 
         this.selectService.closeSelect(this.selectId);
+
+        this.resetComponent();
       }
     });
+  }
+
+  /**
+   * Prepare component to when reopen
+   * when reopen show all options
+   */
+  private resetComponent() {
+    this.searchControl.setValue('');
+    this.visibleOptions = this.options;
   }
 
   /**
@@ -165,6 +176,8 @@ export class SingleSelectComponent
 
     /* When select item close select component */
     // this.selectService.closeSelect(this.selectId);
+
+    this.resetComponent();
   }
 
   textPresentation(): string {
