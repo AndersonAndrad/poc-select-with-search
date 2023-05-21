@@ -6,7 +6,7 @@
   </header>
 
   <!-- Opened component -->
-  <div class="select-options-container" *ngIf="opened">
+  <div class="select-options-container" *ngIf="opened" #options>
     <div>
       <header>
         <input
@@ -15,7 +15,7 @@
           placeholder="Buscar..."
         />
       </header>
-      <ul *ngIf="visibleOptions.length">
+      <ul *ngIf="visibleOptions.length" #scrollOptions>
         <li
           *ngFor="let option of visibleOptions"
           (click)="selectItem(option[this.key])"

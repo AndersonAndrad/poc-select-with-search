@@ -25,8 +25,12 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     if (element) this.closeWhenOutsideClick(element);
   }
 
-  @ViewChild('options') set optionsElement(element: ElementRef) {
+  @ViewChild('scrollOptions') set scrollOptionsElement(element: ElementRef) {
     if (element) this.listenScrollOptions(element);
+  }
+
+  @ViewChild('options') set optionsElement(element: ElementRef) {
+    if (element) this.listenPositionComponent(element);
   }
 
   @Input() control: FormControl = new FormControl();
@@ -104,12 +108,17 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         container.offsetHeight + container.scrollTop >= container.scrollHeight;
 
       const emmitToParent: boolean = this.totalCount
-        ? this.totalCount > 0 && this.totalCount <= this.options.length
+        ? this.totalCount > 0 && this.options.length < this.totalCount
         : false;
 
       if (endScroll && emmitToParent) this.loadMore.emit();
     });
   }
+
+  /**
+   * @TODO: Implements when select is bottom open coponent to upside
+   */
+  private listenPositionComponent(element: ElementRef) {}
 
   /* Utils */
   private search(label: string) {
