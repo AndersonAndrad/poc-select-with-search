@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -21,9 +20,7 @@ import { SelectsService } from 'src/app/services/select.service';
   templateUrl: './single-select.component.html',
   styleUrls: ['./single-select.component.scss'],
 })
-export class SingleSelectComponent
-  implements OnInit, OnDestroy, AfterViewInit, OnChanges
-{
+export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('selector') set selectorElement(element: ElementRef) {
     if (element) this.closeWhenOutsideClick(element);
   }
@@ -48,7 +45,7 @@ export class SingleSelectComponent
 
   visibleOptions: any[] = [];
 
-  opened: boolean = true;
+  opened: boolean = false;
 
   searchControl: FormControl = new FormControl();
 
@@ -73,10 +70,6 @@ export class SingleSelectComponent
     this.selectService.unregiesterSelect(this.selectId);
   }
 
-  ngAfterViewInit(): void {
-    throw new Error('Method not implemented.');
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if ('options' in changes) {
       this.options = changes['options'].currentValue;
@@ -97,7 +90,6 @@ export class SingleSelectComponent
     this.subscription.add(
       this.selectService.onChangeStatusOpen.subscribe(
         ({ selectId, opened }) => {
-          console.log({ opened });
           if (this.selectId === selectId) this.opened = opened;
         }
       )
@@ -172,10 +164,8 @@ export class SingleSelectComponent
 
     this.keyItemSelected = key;
 
-    this.opened = !this.opened;
-
     /* When select item close select component */
-    // this.selectService.closeSelect(this.selectId);
+    this.selectService.closeSelect(this.selectId);
 
     this.resetComponent();
   }
@@ -196,15 +186,17 @@ export class SingleSelectComponent
     event.stopImmediatePropagation();
 
     this.registerSelect();
-    this.opened = !this.opened;
-    // this.selectService.changeStatusOpen(this.selectId);
+
+    if (this.opened) {
+      this.selectService.closeSelect(this.selectId);
+      this.resetComponent();
+      return;
+    }
+
+    this.selectService.changeStatusOpen(this.selectId);
   }
 
   iconExpand() {
     return this.opened ? 'expand_less' : 'expand_more';
   }
-
-  // ngAfterViewInit() {
-  //   this.helperCloseWhenOutsideClick();
-  // }
 }
