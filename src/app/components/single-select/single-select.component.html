@@ -8,7 +8,7 @@
   <!-- Opened component -->
   <div class="select-options-container" *ngIf="opened" #options>
     <div>
-      <header>
+      <header *ngIf="enableSearch">
         <input
           type="text"
           [formControl]="searchControl"

@@ -43,6 +43,8 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() totalCount: number = 0;
 
+  @Input() enableSearch: boolean = true;
+
   @Output() onSelect = new EventEmitter<any>();
 
   @Output() loadMore = new EventEmitter();
@@ -64,7 +66,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    this.listenSearch();
+    if (this.enableSearch) this.listenSearch();
     this.registerSelect();
     this.listenChangeStatusOpen();
   }
