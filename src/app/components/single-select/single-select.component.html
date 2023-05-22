@@ -19,6 +19,7 @@
         <li
           *ngFor="let option of visibleOptions"
           (click)="selectItem(option[this.key])"
+          [ngClass]="{ disabled: checkIsDisabled(option[this.key]) }"
         >
           {{ option[this.label] }}
         </li>

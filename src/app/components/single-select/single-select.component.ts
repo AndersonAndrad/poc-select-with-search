@@ -184,7 +184,19 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.selectId = this.selectService.registerSelect();
   }
 
+  checkIsDisabled(key: string): boolean {
+    const option = this.options.find((option) => option[this.key] === key);
+
+    if (!option) return false;
+
+    if ('disabled' in option) return option['disabled'];
+
+    return false;
+  }
+
   selectItem(key: string) {
+    if (this.checkIsDisabled(key)) return;
+
     if (this.control) this.control.setValue(key);
 
     this.onSelect.emit(key);

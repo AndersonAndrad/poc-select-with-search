@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Select } from './services/select.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,6 +19,7 @@ export class AppComponent implements OnInit {
       this._items.push({
         id: `${i}`,
         label: `item - ${i}`,
+        disabled: false,
       });
     }
   }
@@ -24,9 +27,4 @@ export class AppComponent implements OnInit {
   get items() {
     return this._items;
   }
-}
-
-interface Select {
-  id: string;
-  label: string;
 }

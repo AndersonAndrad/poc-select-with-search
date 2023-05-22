@@ -72,3 +72,9 @@ export class SelectsService {
     return this.onChangeStatusOpenSub.asObservable();
   }
 }
+
+export interface Select {
+  id: string;
+  label: string;
+  disabled?: boolean;
+}
