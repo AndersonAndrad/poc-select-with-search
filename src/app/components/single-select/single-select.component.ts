@@ -1,4 +1,6 @@
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -19,6 +21,7 @@ import { SelectsService } from 'src/app/services/select.service';
   selector: 'single-select',
   templateUrl: './single-select.component.html',
   styleUrls: ['./single-select.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('selector') set selectorElement(element: ElementRef) {
@@ -61,14 +64,16 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   private keyItemSelected: string = '';
 
-  constructor(private selectService: SelectsService) {
-    this.registerSelect();
-  }
+  constructor(
+    private selectService: SelectsService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     if (this.enableSearch) this.listenSearch();
     this.registerSelect();
     this.listenChangeStatusOpen();
+    this.cdr.markForCheck();
   }
 
   ngOnDestroy(): void {
@@ -88,7 +93,10 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.add(
       this.searchControl.valueChanges
         .pipe(debounceTime(750))
-        .subscribe((value) => this.search(value))
+        .subscribe((value) => {
+          this.search(value);
+          this.cdr.markForCheck();
+        })
     );
   }
 
@@ -96,7 +104,10 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription.add(
       this.selectService.onChangeStatusOpen.subscribe(
         ({ selectId, opened }) => {
-          if (this.selectId === selectId) this.opened = opened;
+          if (this.selectId === selectId) {
+            this.opened = opened;
+            this.cdr.markForCheck();
+          }
         }
       )
     );
@@ -113,7 +124,10 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         ? this.totalCount > 0 && this.options.length < this.totalCount
         : false;
 
-      if (endScroll && emmitToParent) this.loadMore.emit();
+      if (endScroll && emmitToParent) {
+        this.loadMore.emit();
+        this.cdr.markForCheck();
+      }
     });
   }
 
@@ -146,6 +160,8 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         this.selectService.closeSelect(this.selectId);
 
         this.resetComponent();
+
+        this.cdr.markForCheck();
       }
     });
   }
