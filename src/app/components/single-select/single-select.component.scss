@@ -77,8 +77,15 @@
 }
 
 .select-options-container div ul li {
+  padding: 5px 10px;
+  border-radius: 2px;
+  height: 20px;
+  transition: filter 0.5s;
+
   &:hover {
     cursor: pointer;
+    background: #cecece;
+    filter: brightness(0.9);
   }
 
   &+li {

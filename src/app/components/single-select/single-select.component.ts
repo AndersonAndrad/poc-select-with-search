@@ -54,7 +54,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   visibleOptions: any[] = [];
 
-  opened: boolean = false;
+  opened: boolean = true;
 
   searchControl: FormControl = new FormControl();
 
