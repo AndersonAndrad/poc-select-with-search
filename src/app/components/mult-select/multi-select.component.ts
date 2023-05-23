@@ -7,7 +7,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -16,14 +15,18 @@ import { Subscription, debounceTime } from 'rxjs';
 
 import { FormControl } from '@angular/forms';
 import { SelectsService } from 'src/app/services/select.service';
+import { MultiSelectorUtil } from 'src/app/utils/multiselect-util';
 
 @Component({
-  selector: 'single-select',
-  templateUrl: './single-select.component.html',
-  styleUrls: ['./single-select.component.scss'],
+  selector: 'multi-select',
+  templateUrl: './multi-select.component.html',
+  styleUrls: ['./multi-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
+export class MultiSelectComponent
+  extends MultiSelectorUtil<any>
+  implements OnDestroy, OnChanges
+{
   @ViewChild('selector') set selectorElement(element: ElementRef) {
     if (element) this.closeWhenOutsideClick(element);
   }
@@ -38,23 +41,31 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() control: FormControl = new FormControl();
 
+  /** Options sented by parent */
   @Input() options: any[] = [];
 
-  @Input() key: string = 'id';
+  /* Key identification option */
+  @Input() id: string = 'id';
 
+  /* label option */
   @Input() label: string = 'label';
 
+  /* remaining amount options  */
   @Input() totalCount: number = 0;
 
+  /* Check to enable show input to component */
   @Input() enableSearch: boolean = true;
 
-  @Output() onSelect = new EventEmitter<any>();
+  /* options previus selected */
+  @Input() previusSelected: any[] = [];
 
+  /* when select any element */
+  @Output() onSelect = new EventEmitter<any[]>();
+
+  /* emit to parent load more options when has remaining amount */
   @Output() loadMore = new EventEmitter();
 
-  visibleOptions: any[] = [];
-
-  opened: boolean = false;
+  opened: boolean = true;
 
   searchControl: FormControl = new FormControl();
 
@@ -62,18 +73,13 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   private selectId: string = '';
 
-  private keyItemSelected: string = '';
+  private cacheOptions: any[] = [];
 
   constructor(
     private selectService: SelectsService,
     private cdr: ChangeDetectorRef
-  ) {}
-
-  ngOnInit(): void {
-    if (this.enableSearch) this.listenSearch();
-    this.registerSelect();
-    this.listenChangeStatusOpen();
-    this.cdr.markForCheck();
+  ) {
+    super('');
   }
 
   ngOnDestroy(): void {
@@ -84,7 +90,8 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ('options' in changes) {
       this.options = changes['options'].currentValue;
-      this.visibleOptions = this.options;
+      this.listSelectable = this.options;
+      this.cacheOptions = this.options;
     }
   }
 
@@ -139,14 +146,14 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   /* Utils */
   private search(label: string) {
     if (!label.length) {
-      this.visibleOptions = this.options;
+      this.listSelectable = this.cacheOptions;
       return;
     }
 
     const regex = new RegExp(label, 'i');
 
-    this.visibleOptions = this.options.filter((option) => {
-      return regex.test(option[this.key]) || regex.test(option[this.label]);
+    this.listSelectable = this.cacheOptions.filter((option) => {
+      return regex.test(option[this.id]) || regex.test(option[this.label]);
     });
   }
 
@@ -172,7 +179,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
    */
   private resetComponent() {
     this.searchControl.setValue('');
-    this.visibleOptions = this.options;
+    this.listSelectable = this.options;
   }
 
   /**
@@ -184,8 +191,45 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.selectId = this.selectService.registerSelect();
   }
 
+  override toggleSingle(id: string): void {
+    super.toggleSingle(id);
+
+    if (this.checkIsDisabled(id)) return;
+
+    if (this.control) this.control.setValue(this.listSelected);
+
+    this.onSelect.emit(this.listSelected);
+  }
+
+  override toogleAll(): void {
+    super.toogleAll();
+
+    this.onSelect.emit(this.listSelected);
+
+    if (this.control) this.control.setValue(this.listSelected);
+  }
+
+  protected override load(): void {
+    if (!this.options.length) return;
+
+    this.setObjectKey(this.id);
+
+    this.cacheOptions = this.options;
+    this.listSelectable = this.options;
+    this.listSelected = this.previusSelected;
+
+    /* Register listeners */
+    if (this.enableSearch) this.listenSearch();
+    this.registerSelect();
+    this.listenChangeStatusOpen();
+    this.cdr.markForCheck();
+  }
+
+  /**
+   * Check if option has property to disable
+   */
   checkIsDisabled(key: string): boolean {
-    const option = this.options.find((option) => option[this.key] === key);
+    const option = this.options.find((option) => option[this.id] === key);
 
     if (!option) return false;
 
@@ -194,29 +238,14 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     return false;
   }
 
-  selectItem(key: string) {
-    if (this.checkIsDisabled(key)) return;
-
-    if (this.control) this.control.setValue(key);
-
-    this.onSelect.emit(key);
-
-    this.keyItemSelected = key;
-
-    /* When select item close select component */
-    this.selectService.closeSelect(this.selectId);
-
-    this.resetComponent();
-  }
-
+  /**
+   * Message to show when has or no option selected
+   */
   textPresentation(): string {
     let textPresentation: string = 'Escolher';
 
-    const item = this.options.find(
-      (option) => option[this.key] === this.keyItemSelected
-    );
-
-    if (item) textPresentation = item[this.label];
+    if (this.listSelected.length)
+      textPresentation = `${this.listSelected.length} Escolhidos`;
 
     return textPresentation;
   }
@@ -235,6 +264,9 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     this.selectService.changeStatusOpen(this.selectId);
   }
 
+  /**
+   * Icon to show when opened or closed select
+   */
   iconExpand() {
     return this.opened ? 'expand_less' : 'expand_more';
   }

@@ -1,0 +1,46 @@
+<div class="select" #selector>
+  <!-- Closed component -->
+  <header class="select-presentation" (click)="openSelect($event)">
+    <span>{{ textPresentation() }}</span>
+    <i class="material-icons">{{ iconExpand() }}</i>
+  </header>
+
+  <!-- Opened component -->
+  <div class="select-options-container" *ngIf="opened" #options>
+    <div>
+      <header *ngIf="enableSearch">
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Buscar..."
+        />
+        <label>
+          <input
+            type="checkbox"
+            [ngModel]="fullChecked"
+            (change)="toogleAll()"
+          />
+          Selecionar todos
+        </label>
+      </header>
+      <ul *ngIf="listSelectable.length" #scrollOptions>
+        <li
+          *ngFor="let option of listSelectable"
+          [ngClass]="{ disabled: checkIsDisabled(option[this.id]) }"
+        >
+          <label>
+            <input
+              type="checkbox"
+              [ngModel]="getChecked(option[this.id])"
+              (change)="toggleSingle(option[this.id])"
+            />
+            {{ option[this.label] }}
+          </label>
+        </li>
+      </ul>
+      <footer *ngIf="!listSelectable.length">
+        <p>Nenhum item encontrado</p>
+      </footer>
+    </div>
+  </div>
+</div>
