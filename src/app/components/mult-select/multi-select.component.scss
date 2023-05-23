@@ -55,7 +55,11 @@
   height: 20px;
 
   gap: 5px;
-  width: 100%;
+  width: 80px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   transition: filter 0.5s;
 
@@ -67,7 +71,6 @@
 
 .select-options-container header label input {
   width: fit-content;
-
 }
 
 
@@ -103,20 +106,12 @@
 
 .select-options-container div ul li {
   padding: 5px 10px;
-  height: 20px;
+  // height: 20px;
+  height: fit-content;
   border-radius: 2px;
 
   &+li {
     margin-top: 3px;
-  }
-
-  &:first-child {
-    background: none;
-
-    &:hover {
-      background: none;
-      filter: none;
-    }
   }
 
   &:hover {
@@ -129,6 +124,16 @@
     background: #cecece;
     color: rgba(0, 0, 0, 0.9);
     cursor: not-allowed;
+  }
+}
+
+.select-options-container div ul li label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &:hover {
+    cursor: pointer;
   }
 }
 

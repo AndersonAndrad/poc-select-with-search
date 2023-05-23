@@ -65,6 +65,9 @@ export class MultiSelectComponent
   /* emit to parent load more options when has remaining amount */
   @Output() loadMore = new EventEmitter();
 
+  /* emit to parent to search my value */
+  @Output() searchParent = new EventEmitter<string>();
+
   opened: boolean = true;
 
   searchControl: FormControl = new FormControl();
@@ -102,6 +105,7 @@ export class MultiSelectComponent
         .pipe(debounceTime(750))
         .subscribe((value) => {
           this.search(value);
+          this.searchParent.emit(value);
           this.cdr.markForCheck();
         })
     );

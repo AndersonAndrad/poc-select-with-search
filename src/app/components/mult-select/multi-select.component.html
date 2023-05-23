@@ -29,12 +29,16 @@
           [ngClass]="{ disabled: checkIsDisabled(option[this.id]) }"
         >
           <label>
-            <input
-              type="checkbox"
-              [ngModel]="getChecked(option[this.id])"
-              (change)="toggleSingle(option[this.id])"
-            />
-            {{ option[this.label] }}
+            <section>
+              <input
+                type="checkbox"
+                [ngModel]="getChecked(option[this.id])"
+                (change)="toggleSingle(option[this.id])"
+              />
+            </section>
+            <section>
+              {{ option[this.label] }}
+            </section>
           </label>
         </li>
       </ul>

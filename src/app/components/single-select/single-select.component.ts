@@ -38,19 +38,29 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   @Input() control: FormControl = new FormControl();
 
+  /** Options sented by parent */
   @Input() options: any[] = [];
 
+  /* Key identification option */
   @Input() key: string = 'id';
 
+  /* label option */
   @Input() label: string = 'label';
 
+  /* remaining amount options  */
   @Input() totalCount: number = 0;
 
+  /* Check to enable show input to component */
   @Input() enableSearch: boolean = true;
 
+  /* when select any element */
   @Output() onSelect = new EventEmitter<any>();
 
+  /* emit to parent load more options when has remaining amount */
   @Output() loadMore = new EventEmitter();
+
+  /* emit to parent to search my value */
+  @Output() searchParent = new EventEmitter<string>();
 
   visibleOptions: any[] = [];
 
@@ -95,6 +105,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         .pipe(debounceTime(750))
         .subscribe((value) => {
           this.search(value);
+          this.searchParent.emit(value);
           this.cdr.markForCheck();
         })
     );
