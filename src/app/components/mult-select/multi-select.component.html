@@ -20,7 +20,7 @@
             [ngModel]="fullChecked"
             (change)="toogleAll()"
           />
-          Selecionar todos
+          selecionar/desmarcar todos
         </label>
       </header>
       <ul *ngIf="listSelectable.length" #scrollOptions>
@@ -43,7 +43,7 @@
         </li>
       </ul>
       <footer *ngIf="!listSelectable.length">
-        <p>Nenhum item encontrado</p>
+        <p>{{ textNotFound() }}</p>
       </footer>
     </div>
   </div>

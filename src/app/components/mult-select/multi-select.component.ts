@@ -68,7 +68,7 @@ export class MultiSelectComponent
   /* emit to parent to search my value */
   @Output() searchParent = new EventEmitter<string>();
 
-  opened: boolean = true;
+  opened: boolean = false;
 
   searchControl: FormControl = new FormControl();
 
@@ -77,6 +77,8 @@ export class MultiSelectComponent
   private selectId: string = '';
 
   private cacheOptions: any[] = [];
+
+  private lastStringSearch: string = '';
 
   constructor(
     private selectService: SelectsService,
@@ -106,6 +108,7 @@ export class MultiSelectComponent
         .subscribe((value) => {
           this.search(value);
           this.searchParent.emit(value);
+          this.lastStringSearch = value;
           this.cdr.markForCheck();
         })
     );
@@ -243,6 +246,13 @@ export class MultiSelectComponent
   }
 
   /**
+   * Return text to show when not found any item by name
+   */
+  textNotFound(): string {
+    return `Nenhum resultado encontrado para ${this.lastStringSearch}`;
+  }
+
+  /**
    * Message to show when has or no option selected
    */
   textPresentation(): string {
@@ -275,3 +285,12 @@ export class MultiSelectComponent
     return this.opened ? 'expand_less' : 'expand_more';
   }
 }
+
+/**
+ * melhorias
+- linha dividindo cada opção (linha da parte de cima)
+- usar (#F4F5F7) para hover em cima das opcoes
+- mantem o check na esquerda
+- alterar texto de nenhum item encontrado para (nenhum item encontrado para "text")g
+- alterar "selecionar" para (selecionar/desmarcar todos)
+ */

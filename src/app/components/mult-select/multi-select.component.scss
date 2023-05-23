@@ -50,12 +50,12 @@
 .select-options-container header label {
   display: flex;
   align-items: center;
+  width: fit-content;
 
   padding: 5px 10px;
   height: 20px;
 
   gap: 5px;
-  width: 80px;
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -111,11 +111,12 @@
   border-radius: 2px;
 
   &+li {
-    margin-top: 3px;
+    border-radius: 0;
+    border-top: 1px solid #F4F5F7;
   }
 
   &:hover {
-    background: #cecece;
+    background: #F4F5F7;
     filter: brightness(0.9);
   }
 
