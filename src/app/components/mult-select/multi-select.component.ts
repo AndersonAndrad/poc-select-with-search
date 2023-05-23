@@ -285,12 +285,3 @@ export class MultiSelectComponent
     return this.opened ? 'expand_less' : 'expand_more';
   }
 }
-
-/**
- * melhorias
-- linha dividindo cada opção (linha da parte de cima)
-- usar (#F4F5F7) para hover em cima das opcoes
-- mantem o check na esquerda
-- alterar texto de nenhum item encontrado para (nenhum item encontrado para "text")g
-- alterar "selecionar" para (selecionar/desmarcar todos)
- */
