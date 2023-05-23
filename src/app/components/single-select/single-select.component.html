@@ -25,7 +25,7 @@
         </li>
       </ul>
       <footer *ngIf="!visibleOptions.length">
-        <p>Nenhum item encontrado</p>
+        <p>{{ textNotFound() }}</p>
       </footer>
     </div>
   </div>

@@ -74,6 +74,8 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   private keyItemSelected: string = '';
 
+  private lastStringSearch: string = '';
+
   constructor(
     private selectService: SelectsService,
     private cdr: ChangeDetectorRef
@@ -106,6 +108,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         .subscribe((value) => {
           this.search(value);
           this.searchParent.emit(value);
+          this.lastStringSearch = value;
           this.cdr.markForCheck();
         })
     );
@@ -230,6 +233,13 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
     if (item) textPresentation = item[this.label];
 
     return textPresentation;
+  }
+
+  /**
+   * Return text to show when not found any item by name
+   */
+  textNotFound(): string {
+    return `Nenhum resultado encontrado para ${this.lastStringSearch}`;
   }
 
   openSelect(event: Event) {
