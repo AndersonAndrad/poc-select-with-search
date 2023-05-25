@@ -76,6 +76,8 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
 
   private lastStringSearch: string = '';
 
+  private cacheOptions: any[] = [];
+
   constructor(
     private selectService: SelectsService,
     private cdr: ChangeDetectorRef
@@ -96,6 +98,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if ('options' in changes) {
       this.options = changes['options'].currentValue;
+      this.cacheOptions = this.options;
       this.visibleOptions = this.options;
     }
   }
@@ -135,7 +138,7 @@ export class SingleSelectComponent implements OnInit, OnDestroy, OnChanges {
         container.offsetHeight + container.scrollTop >= container.scrollHeight;
 
       const emmitToParent: boolean = this.totalCount
-        ? this.totalCount > 0 && this.options.length < this.totalCount
+        ? this.totalCount > 0 && this.cacheOptions.length < this.totalCount
         : false;
 
       if (endScroll && emmitToParent) {
